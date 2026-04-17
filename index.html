@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Punjabi Story Studio</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 450px;
+            margin: auto;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+        }
+
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin: 5px;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 8px;
+            margin: 5px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>📚 Punjabi Story + Voice Studio</h2>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/convert" method="post">
+
+        <!-- Title -->
+        <input type="text" name="title" placeholder="Enter Story Title" value="{{ title }}"><br>
+
+        <!-- Story -->
+        <textarea name="text" rows="5" placeholder="Write your story...">{{ text }}</textarea><br>
+
+        <!-- Language -->
+        <select name="lang">
+            <option value="pa">Punjabi</option>
+            <option value="hi">Hindi</option>
+            <option value="en">English</option>
+        </select>
+
+        <!-- Speed -->
+        <select name="speed">
+            <option value="normal">Normal Speed</option>
+            <option value="slow">Slow Speed</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">🎤 Convert to Audio</button>
+        <button type="button" onclick="clearText()">🗑 Clear</button>
+
+    </form>
+
+    {% if audio_file %}
+        <p style="color:green;">✅ Audio Ready</p>
+
+        <audio controls>
+            <source src="{{ audio_file }}" type="audio/mpeg">
+        </audio>
+
+        <br><br>
+
+        <a href="{{ audio_file }}" download>
+            <button>⬇ Download</button>
+        </a>
+    {% endif %}
+
+</div>
+
+<script>
+function clearText() {
+    document.querySelector("textarea").value = "";
+}
+</script>
+
+</body>
+</html>
