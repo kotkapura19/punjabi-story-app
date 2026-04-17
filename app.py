@@ -1,10 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from gtts import gTTS
 import os
-import time
-import os
-port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port)
 
 app = Flask(__name__)
 
@@ -12,35 +8,25 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+
 @app.route('/convert', methods=['POST'])
 def convert():
-    title = request.form.get('title', '')
-    text = request.form.get('text', '')
-    lang = request.form.get('lang', 'pa')
-    speed = request.form.get('speed', 'normal')
+    text = request.form.get('text')
 
-    # empty check
-    if text.strip() == "":
-        return render_template('index.html', error="Please enter story text")
+    if not text:
+        return render_template('index.html', error="Please enter text")
 
-    # combine title + text
-    final_text = f"{title}. {text}"
-
-    # create static folder
+    tts = gTTS(text=text, lang='pa')
+    
     if not os.path.exists('static'):
         os.makedirs('static')
 
-    # unique filename
-    filename = f"static/story_{int(time.time())}.mp3"
-
-    # speed control
-    slow = True if speed == "slow" else False
-
-    # generate audio
-    tts = gTTS(text=final_text, lang=lang, slow=slow)
+    filename = "static/output.mp3"
     tts.save(filename)
 
-    return render_template('index.html', audio_file=filename, text=text, title=title)
+    return render_template('index.html', audio=filename, text=text)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
